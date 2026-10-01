@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="GolfIQ teaching card for Meta Ray-Ban Display. A screen-fixed prompt, not a line on the green."
+    />
+    <meta name="mrbd-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=600, height=600, initial-scale=1.0, user-scalable=no" />
+    <title>GolfIQ teaching card</title>
+    <link rel="icon" type="image/png" href="/lens-card/favicon.png" sizes="64x64" />
+    <style>
+      html,
+      body {
+        width: 600px;
+        height: 600px;
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+        color: #f4fff6;
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+      }
+
+      body {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        box-sizing: border-box;
+        padding: 40px 32px 20px;
+      }
+
+      body[data-screen="ready"] .kicker {
+        visibility: hidden;
+      }
+
+      p,
+      h1,
+      figure {
+        margin: 0;
+      }
+
+      .kicker,
+      .lesson {
+        color: #9dccab;
+        font-size: 16px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .lesson {
+        margin-top: 4px;
+      }
+
+      h1 {
+        margin-top: 8px;
+        font-size: 28px;
+        line-height: 1.2;
+        font-weight: 600;
+      }
+
+      .prompt,
+      .clue {
+        margin-top: 18px;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-content: end;
+      }
+
+      button {
+        min-height: 88px;
+        padding: 12px 22px;
+        border-radius: 999px;
+        border: 2px solid transparent;
+        background: #123c28;
+        color: #f4fff6;
+        font: inherit;
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      button.secondary {
+        background: transparent;
+        border-color: #2f6a49;
+      }
+
+      button:focus {
+        outline: none;
+        border-color: #b8f3c8;
+        box-shadow: 0 0 16px rgba(184, 243, 200, 0.45);
+      }
+
+      main {
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .screen[hidden] {
+        display: none;
+      }
+
+      #notice-screen,
+      #compose-screen,
+      #clue-screen,
+      #sketch-screen {
+        background: #1a6b42;
+        border-radius: 20px;
+        padding: 14px 16px 10px;
+      }
+
+      textarea {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 12px;
+        min-height: 96px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        border: 2px solid #d7f5e2;
+        background: #0e3a24;
+        color: #f4fff6;
+        font: inherit;
+        font-size: 20px;
+        line-height: 1.35;
+        resize: none;
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: #b8f3c8;
+        box-shadow: 0 0 16px rgba(184, 243, 200, 0.45);
+      }
+
+      .error,
+      .said,
+      .said-note {
+        margin-top: 12px;
+        font-size: 18px;
+        line-height: 1.35;
+      }
+
+      .said-words {
+        margin-top: 6px;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      figure {
+        margin-top: 16px;
+        padding: 12px;
+        border: 1px solid #2f6a49;
+        border-radius: 16px;
+      }
+
+      figcaption {
+        margin-top: 8px;
+        font-size: 16px;
+        line-height: 1.35;
+        color: #c9e7d4;
+      }
+
+      svg {
+        display: block;
+        width: 100%;
+        height: 168px;
+      }
+    </style>
+  </head>
+  <body data-screen="notice">
+    <p class="kicker">GolfIQ</p>
+    <main>
+      <section id="notice-screen" class="screen">
+        <h1>What do you notice?</h1>
+        <p class="prompt">
+          Before GolfIQ says anything — what do you notice? “I don’t know” is a fair answer.
+        </p>
+      </section>
+      <section id="compose-screen" class="screen" hidden>
+        <h1>My notice</h1>
+        <p class="prompt">
+          Activate the field. The glasses composer can write or dictate. This page does not open the
+          microphone.
+        </p>
+        <textarea
+          id="my-notice"
+          class="focusable"
+          placeholder="Activate to write or speak"
+          aria-label="My notice, in your words"
+        ></textarea>
+        <p id="notice-error" class="error" hidden>
+          Write what you notice, or go back and choose I don't know.
+        </p>
+      </section>
+      <section id="clue-screen" class="screen" hidden>
+        <p class="lesson">Prepared practice lesson</p>
+        <p id="said-label" class="said" hidden>You said</p>
+        <p id="said-words" class="said-words" hidden></p>
+        <p id="said-note" class="said-note" hidden>Your words. Not a measurement of the green.</p>
+        <h1>Look at the putting surface</h1>
+        <p class="clue" id="clue">
+          Look at the grass between your ball and the hole. What do you notice now?
+        </p>
+      </section>
+      <section id="sketch-screen" class="screen" hidden>
+        <p class="lesson">Prepared practice lesson</p>
+        <h1>Practice illustration</h1>
+        <figure>
+          <svg
+            viewBox="0 0 520 200"
+            role="img"
+            aria-label="Prepared practice illustration. Look between the labeled ball and hole. Not aligned with your green."
+          >
+            <rect width="520" height="200" rx="16" fill="#145c38" />
+            <rect x="108" y="48" width="304" height="72" rx="36" fill="#3d9a62" />
+            <text
+              x="260"
+              y="92"
+              text-anchor="middle"
+              fill="#f4fff6"
+              font-size="22"
+              font-family="Avenir Next, Segoe UI, sans-serif"
+            >
+              Look between ball and hole.
+            </text>
+            <circle cx="72" cy="84" r="18" fill="#f4fff6" />
+            <text
+              x="72"
+              y="148"
+              text-anchor="middle"
+              fill="#c9e7d4"
+              font-size="20"
+              font-family="Avenir Next, Segoe UI, sans-serif"
+            >
+              Ball
+            </text>
+            <circle cx="448" cy="84" r="20" fill="none" stroke="#f4fff6" stroke-width="3" />
+            <text
+              x="448"
+              y="148"
+              text-anchor="middle"
+              fill="#c9e7d4"
+              font-size="20"
+              font-family="Avenir Next, Segoe UI, sans-serif"
+            >
+              Hole
+            </text>
+          </svg>
+          <figcaption>Practice illustration—not aligned with your green.</figcaption>
+        </figure>
+      </section>
+      <section id="ready-screen" class="screen" hidden></section>
+    </main>
+    <div class="actions" id="actions"></div>
+    <script>
+      const body = document.body;
+      const actions = document.getElementById("actions");
+      const noticeField = document.getElementById("my-notice");
+      const noticeError = document.getElementById("notice-error");
+      const saidLabel = document.getElementById("said-label");
+      const saidWords = document.getElementById("said-words");
+      const saidNote = document.getElementById("said-note");
+      const screens = {
+        notice: document.getElementById("notice-screen"),
+        compose: document.getElementById("compose-screen"),
+        clue: document.getElementById("clue-screen"),
+        sketch: document.getElementById("sketch-screen"),
+        ready: document.getElementById("ready-screen"),
+      };
+      let ownWords = null;
+
+      function renderSaid() {
+        const showWords = Boolean(ownWords);
+        saidLabel.hidden = !showWords;
+        saidWords.hidden = !showWords;
+        saidNote.hidden = !showWords;
+        saidWords.textContent = ownWords || "";
+      }
+
+      function button(label, className, onClick) {
+        const node = document.createElement("button");
+        node.type = "button";
+        node.className = className ? `focusable ${className}` : "focusable";
+        node.textContent = label;
+        node.addEventListener("click", onClick);
+        return node;
+      }
+
+      function show(name) {
+        for (const [id, screen] of Object.entries(screens)) screen.hidden = id !== name;
+        body.dataset.screen = name;
+        actions.replaceChildren();
+        if (name === "notice") {
+          actions.append(
+            button("My notice", "secondary", () => show("compose")),
+            button("I don't know", "", () => {
+              ownWords = null;
+              renderSaid();
+              show("clue");
+            }),
+          );
+        } else if (name === "compose") {
+          noticeError.hidden = true;
+          actions.append(
+            button("That's my notice", "", submitOwnNotice),
+            button("Cancel", "secondary", () => show("notice")),
+          );
+        } else if (name === "clue") {
+          actions.append(
+            button("Practice illustration", "secondary", () => show("sketch")),
+            button("Ready to putt", "", () => show("ready")),
+          );
+        } else if (name === "sketch") {
+          actions.append(button("Back to the clue", "secondary", () => show("clue")));
+        } else {
+          actions.append(button("Review", "secondary", () => show("clue")));
+        }
+        if (name === "compose") noticeField.focus();
+        else actions.querySelector(".focusable")?.focus();
+      }
+
+      function submitOwnNotice() {
+        const text = noticeField.value.trim();
+        if (!text) {
+          noticeError.hidden = false;
+          return;
+        }
+        ownWords = text;
+        renderSaid();
+        show("clue");
+      }
+
+      function isTextField(node) {
+        return node instanceof HTMLTextAreaElement;
+      }
+
+      function focusables() {
+        const fields = [...document.querySelectorAll("textarea.focusable")].filter(
+          (node) => !node.closest("[hidden]"),
+        );
+        return [...fields, ...actions.querySelectorAll(".focusable:not([disabled])")];
+      }
+
+      document.addEventListener("keydown", (event) => {
+        const items = focusables();
+        if (!items.length) return;
+        const index = items.indexOf(document.activeElement);
+        if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+          event.preventDefault();
+          items[(index + 1 + items.length) % items.length].focus();
+        } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+          event.preventDefault();
+          items[(index - 1 + items.length) % items.length].focus();
+        } else if (event.key === "Enter" && isTextField(document.activeElement)) {
+          return;
+        } else if (
+          event.key === "Enter" &&
+          document.activeElement?.classList.contains("focusable")
+        ) {
+          event.preventDefault();
+          document.activeElement.click();
+        } else if (event.key === "Escape" && body.dataset.screen !== "notice") {
+          event.preventDefault();
+          const screen = body.dataset.screen;
+          show(screen === "clue" || screen === "compose" ? "notice" : "clue");
+        }
+      });
+
+      show("notice");
+    </script>
+  </body>
+</html>
