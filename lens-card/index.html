@@ -2,12 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="golfiq-card-version" content="2026-10-07.1" />
     <meta
       name="description"
       content="GolfIQ teaching card for Meta Ray-Ban Display. A screen-fixed prompt, not a line on the green."
     />
     <meta name="mrbd-web-app-capable" content="yes" />
     <meta name="viewport" content="width=600, height=600, initial-scale=1.0, user-scalable=no" />
+    <script>
+      if (location.pathname.indexOf("/lens-card-preview") !== -1) {
+        document
+          .querySelector('meta[name="viewport"]')
+          .setAttribute("content", "width=device-width, initial-scale=1");
+        document.documentElement.classList.add("preview");
+      }
+    </script>
     <title>GolfIQ teaching card</title>
     <link rel="icon" type="image/png" href="/lens-card/favicon.png" sizes="64x64" />
     <style>
@@ -25,6 +34,7 @@
       body {
         display: grid;
         grid-template-rows: auto minmax(0, 1fr) auto;
+        gap: 12px;
         box-sizing: border-box;
         padding: 40px 32px 20px;
       }
@@ -111,6 +121,10 @@
         background: #1a6b42;
         border-radius: 20px;
         padding: 14px 16px 10px;
+        box-sizing: border-box;
+        max-height: 100%;
+        overflow-y: auto;
+        overscroll-behavior: contain;
       }
 
       textarea {
@@ -145,6 +159,10 @@
       }
 
       .said-words {
+        max-height: 90px;
+        overflow-y: auto;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
         margin-top: 6px;
         font-size: 22px;
         line-height: 1.35;
@@ -169,6 +187,60 @@
         width: 100%;
         height: 168px;
       }
+
+      html.preview,
+      html.preview body {
+        width: auto;
+        height: auto;
+        overflow: auto;
+      }
+
+      html.preview {
+        min-height: 100%;
+        background: #06140e center / cover no-repeat;
+      }
+
+      html.preview body {
+        display: block;
+        box-sizing: border-box;
+        width: min(640px, calc(100% - 24px));
+        min-height: auto;
+        margin: 12px auto 24px;
+        padding: 16px 16px 20px;
+        border-radius: 24px;
+        background: #10281a;
+      }
+
+      html.preview main {
+        overflow: visible;
+      }
+
+      html.preview .sim-banner {
+        margin-bottom: 14px;
+      }
+
+      html.preview .sim-label {
+        color: #d7f5e2;
+        font-size: 15px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      html.preview .sim-note,
+      html.preview .sim-credit {
+        margin-top: 6px;
+        color: #e7f6ec;
+        font-size: 16px;
+        line-height: 1.4;
+      }
+
+      html.preview .said-words {
+        overflow-wrap: anywhere;
+      }
+
+      html.preview .actions {
+        margin-top: 16px;
+      }
     </style>
   </head>
   <body data-screen="notice">
@@ -182,14 +254,11 @@
       </section>
       <section id="compose-screen" class="screen" hidden>
         <h1>My notice</h1>
-        <p class="prompt">
-          Activate the field. The glasses composer can write or dictate. This page does not open the
-          microphone.
-        </p>
+        <p class="prompt">Write what you notice, in your words.</p>
         <textarea
           id="my-notice"
           class="focusable"
-          placeholder="Activate to write or speak"
+          placeholder="In your words"
           aria-label="My notice, in your words"
         ></textarea>
         <p id="notice-error" class="error" hidden>
@@ -272,6 +341,25 @@
         ready: document.getElementById("ready-screen"),
       };
       let ownWords = null;
+      let transitionTimer;
+      let firstScreen = true;
+
+      if (document.documentElement.classList.contains("preview")) {
+        document.documentElement.style.backgroundImage = 'url("/lens-card-preview/green.jpg")';
+        const banner = document.createElement("div");
+        banner.className = "sim-banner";
+        const label = document.createElement("p");
+        label.className = "sim-label";
+        label.textContent = "Simulated background";
+        const note = document.createElement("p");
+        note.className = "sim-note";
+        note.textContent = "The practice illustration is not aligned with this photograph.";
+        const credit = document.createElement("p");
+        credit.className = "sim-credit";
+        credit.textContent = "Photograph by Rushay Booysen. Pexels photo 4398355.";
+        banner.append(label, note, credit);
+        body.insertBefore(banner, body.firstChild);
+      }
 
       function renderSaid() {
         const showWords = Boolean(ownWords);
@@ -286,13 +374,20 @@
         node.type = "button";
         node.className = className ? `focusable ${className}` : "focusable";
         node.textContent = label;
-        node.addEventListener("click", onClick);
+        node.addEventListener("click", (event) => {
+          if (node.disabled || event.detail > 1) return;
+          onClick();
+        });
         return node;
       }
 
       function show(name) {
+        clearTimeout(transitionTimer);
         for (const [id, screen] of Object.entries(screens)) screen.hidden = id !== name;
         body.dataset.screen = name;
+        const moreWords = name === "clue" && saidWords.scrollHeight > saidWords.clientHeight;
+        saidLabel.textContent = moreWords ? "You said · scroll for more" : "You said";
+        saidWords.tabIndex = moreWords ? 0 : -1;
         actions.replaceChildren();
         if (name === "notice") {
           actions.append(
@@ -319,6 +414,17 @@
         } else {
           actions.append(button("Review", "secondary", () => show("clue")));
         }
+        // Newly placed buttons must not consume the same double-click or rapid tap.
+        const buttons = [...actions.querySelectorAll("button")];
+        if (!firstScreen) {
+          for (const node of buttons) node.disabled = true;
+          transitionTimer = setTimeout(() => {
+            for (const node of buttons) node.disabled = false;
+            if (name !== "compose" && document.activeElement !== saidWords)
+              actions.querySelector(".focusable")?.focus();
+          }, 350);
+        }
+        firstScreen = false;
         if (name === "compose") noticeField.focus();
         else actions.querySelector(".focusable")?.focus();
       }
@@ -339,13 +445,23 @@
       }
 
       function focusables() {
-        const fields = [...document.querySelectorAll("textarea.focusable")].filter(
-          (node) => !node.closest("[hidden]"),
-        );
+        const fields = [
+          ...document.querySelectorAll('textarea.focusable, #said-words[tabindex="0"]'),
+        ].filter((node) => !node.closest("[hidden]"));
         return [...fields, ...actions.querySelectorAll(".focusable:not([disabled])")];
       }
 
       document.addEventListener("keydown", (event) => {
+        // Preserve native caret, selection and multiline editing inside the answer.
+        if (
+          (isTextField(document.activeElement) || document.activeElement === saidWords) &&
+          event.key !== "Escape"
+        )
+          return;
+        if (event.repeat) {
+          event.preventDefault();
+          return;
+        }
         const items = focusables();
         if (!items.length) return;
         const index = items.indexOf(document.activeElement);
@@ -359,6 +475,7 @@
           return;
         } else if (
           event.key === "Enter" &&
+          !document.activeElement?.disabled &&
           document.activeElement?.classList.contains("focusable")
         ) {
           event.preventDefault();
@@ -368,6 +485,16 @@
           const screen = body.dataset.screen;
           show(screen === "clue" || screen === "compose" ? "notice" : "clue");
         }
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden && body.dataset.screen !== "notice") show("ready");
+      });
+      window.addEventListener("pagehide", () => {
+        ownWords = null;
+        noticeField.value = "";
+        renderSaid();
+        show("notice");
       });
 
       show("notice");
