@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GolfIQ · Beginner simulator</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #091e17;
+        color: #f3f5ec;
+        font: 17px/1.5 system-ui;
+      }
+      main {
+        max-width: 1120px;
+        margin: auto;
+        padding: 28px 20px 48px;
+      }
+      header {
+        max-width: 800px;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 44px);
+        line-height: 1.1;
+        margin: 8px 0 14px;
+      }
+      h2 {
+        font-size: 24px;
+        margin: 0 0 12px;
+      }
+      .eyebrow {
+        color: #b5d8bd;
+        letter-spacing: 0.12em;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .disclosure {
+        color: #e7d7a5;
+        font-size: 14px;
+      }
+      canvas {
+        width: 100%;
+        display: block;
+        border-radius: 16px;
+        margin: 22px 0 8px;
+      }
+      .panel {
+        background: #16392b;
+        border: 1px solid #41664d;
+        border-radius: 16px;
+        padding: 22px;
+        margin-top: 16px;
+      }
+      p {
+        margin: 10px 0;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 18px 0;
+      }
+      button {
+        background: #dff6b2;
+        color: #142718;
+        border: 1px solid #dff6b2;
+        border-radius: 9px;
+        padding: 12px 18px;
+        font: 600 16px system-ui;
+        min-height: 48px;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: transparent;
+        color: #e9f6df;
+      }
+      button[aria-pressed="true"] {
+        background: #f7d879;
+        color: #15251b;
+      }
+      button:focus-visible,
+      textarea:focus-visible {
+        outline: 3px solid #f7d879;
+        outline-offset: 4px;
+      }
+      textarea {
+        display: block;
+        width: 100%;
+        min-height: 96px;
+        background: #0d271c;
+        color: #fff;
+        border: 1px solid #9cbc9a;
+        border-radius: 8px;
+        padding: 12px;
+        font: inherit;
+        margin-top: 10px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      .legend {
+        color: #d7e8db;
+        font-size: 15px;
+      }
+      .note {
+        font-size: 14px;
+        color: #c0d3c5;
+      }
+      #your-words {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      #error {
+        color: #ffe39b;
+      }
+      @media (max-width: 520px) {
+        main {
+          padding: 20px 14px;
+        }
+        .panel {
+          padding: 16px;
+        }
+        .controls button {
+          width: 100%;
+        }
+        canvas {
+          margin-top: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="eyebrow">GOLFIQ / BEGINNER SIMULATOR / DRAFT</div>
+        <h1>See the slope. Understand the choice.</h1>
+        <p>One authored example. Take a look before revealing the lesson.</p>
+        <p class="disclosure">
+          Authored simulation · not a measured green or calculated recommendation
+        </p>
+      </header>
+      <canvas
+        id="scene"
+        width="1800"
+        height="1120"
+        role="img"
+        aria-label="Authored putting scene with a ball and a hole. No teaching cues revealed yet."
+      ></canvas>
+      <p id="legend" class="legend">Look at the ground between the ball and the hole.</p>
+      <section id="observe" class="panel">
+        <h2>First, what do you notice?</h2>
+        <label for="notice"
+          >Which side looks higher? Which way might the ball bend?<textarea
+            id="notice"
+            placeholder="Your first impression…"
+          ></textarea>
+        </label>
+        <p id="error" role="alert" hidden>
+          Write your first impression, or choose “I'm not sure yet.”
+        </p>
+        <div class="controls">
+          <button id="save">Keep my observation</button
+          ><button class="secondary" id="unknown">I'm not sure yet</button>
+        </div>
+      </section>
+      <section id="explore" class="panel" hidden>
+        <h2>Explore this example</h2>
+        <p>Your first impression: <span id="your-words"></span></p>
+        <div class="controls">
+          <button id="grid" aria-pressed="false">Show slope</button
+          ><button id="path" aria-pressed="false">Show example aim &amp; path</button
+          ><button id="ready" class="secondary">Ready — clear cues</button>
+        </div>
+        <div id="slope-note" hidden>
+          <p>
+            <strong>Right is higher; left is lower.</strong> The white grid follows this authored
+            tilted surface. Blue arrows point downhill. Neither is a survey of a real green.
+          </p>
+        </div>
+        <div id="rationale" hidden>
+          <h2>Why start right?</h2>
+          <p id="why"></p>
+          <p id="pace"></p>
+          <p id="limit" class="note"></p>
+        </div>
+      </section>
+      <section id="finish" class="panel" hidden>
+        <h2>Cues cleared</h2>
+        <p>
+          Before another example, name the high side and describe why a starting direction could
+          differ from the hole. This does not verify a stroke or prove learning.
+        </p>
+        <button id="review">Review this example</button>
+      </section>
+      <div class="controls"><button id="reset" class="secondary">Start over</button></div>
+      <p class="note">
+        Separate simulator lesson, not a replacement for Lesson 001. Your words stay in this page's
+        memory; reload starts fresh. No sensors, saved answers or putt calculations.
+      </p>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
