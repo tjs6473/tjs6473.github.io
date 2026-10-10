@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="golfiq-card-version" content="2026-10-09.3" />
+    <meta
+      name="description"
+      content="GolfIQ teaching card for Meta Ray-Ban Display. A screen-fixed prompt, not a line on the green."
+    />
+    <meta name="mrbd-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=600, height=600, initial-scale=1.0, user-scalable=no" />
+    <script>
+      if (location.pathname.indexOf("/lens-card-preview") !== -1) {
+        document
+          .querySelector('meta[name="viewport"]')
+          .setAttribute("content", "width=device-width, initial-scale=1");
+        document.documentElement.classList.add("preview");
+        if (location.search.indexOf("view=glasses") !== -1) {
+          document.documentElement.classList.add("glasses");
+        }
+      }
+    </script>
+    <title>GolfIQ teaching card</title>
+    <link rel="icon" type="image/png" href="/lens-card/favicon.png" sizes="64x64" />
+    <style>
+      html,
+      body {
+        width: 600px;
+        height: 600px;
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+        color: #f4fff6;
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+      }
+
+      body {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        gap: 12px;
+        box-sizing: border-box;
+        padding: 40px 32px 24px;
+      }
+
+      p,
+      h1,
+      figure {
+        margin: 0;
+      }
+
+      .kicker,
+      .lesson {
+        color: #9dccab;
+        font-size: 16px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .lesson {
+        margin-top: 4px;
+      }
+
+      .card-version {
+        margin-top: 2px;
+        color: #6f9a80;
+        font-size: 12px;
+        letter-spacing: 0.02em;
+      }
+
+      h1 {
+        margin-top: 8px;
+        font-size: 28px;
+        line-height: 1.2;
+        font-weight: 600;
+      }
+
+      .prompt,
+      .clue {
+        margin-top: 18px;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-content: end;
+        padding-bottom: 4px;
+      }
+
+      button {
+        box-sizing: border-box;
+        min-height: 88px;
+        padding: 12px 22px;
+        border-radius: 999px;
+        border: 2px solid transparent;
+        background: #123c28;
+        color: #f4fff6;
+        font: inherit;
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      button.secondary {
+        background: transparent;
+        border-color: #2f6a49;
+      }
+
+      button:focus {
+        outline: none;
+        border-color: #b8f3c8;
+        box-shadow: 0 0 16px rgba(184, 243, 200, 0.45);
+      }
+
+      main {
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .screen[hidden] {
+        display: none;
+      }
+
+      .screen {
+        background: #1a6b42;
+        border-radius: 20px;
+        padding: 14px 16px 10px;
+        box-sizing: border-box;
+        max-height: 100%;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+
+      textarea {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 12px;
+        min-height: 96px;
+        max-height: 168px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        border: 2px solid #d7f5e2;
+        background: #0e3a24;
+        color: #f4fff6;
+        font: inherit;
+        font-size: 20px;
+        line-height: 1.35;
+        resize: none;
+        overflow-y: auto;
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: #b8f3c8;
+        box-shadow: 0 0 16px rgba(184, 243, 200, 0.45);
+      }
+
+      .error,
+      .said,
+      .said-note {
+        margin-top: 12px;
+        font-size: 18px;
+        line-height: 1.35;
+      }
+
+      .said-words {
+        max-height: 90px;
+        overflow-y: auto;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+        margin-top: 6px;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      figure {
+        margin-top: 16px;
+        padding: 12px;
+        border: 1px solid #2f6a49;
+        border-radius: 16px;
+      }
+
+      figcaption {
+        margin-top: 8px;
+        font-size: 16px;
+        line-height: 1.35;
+        color: #c9e7d4;
+      }
+
+      svg {
+        display: block;
+        width: 100%;
+        height: 168px;
+      }
+
+      html.preview,
+      html.preview body {
+        width: auto;
+        height: auto;
+        overflow: auto;
+      }
+
+      html.preview {
+        min-height: 100%;
+        background: #06140e center / cover no-repeat;
+        scroll-padding-bottom: 32px;
+      }
+
+      html.preview body {
+        display: block;
+        box-sizing: border-box;
+        width: min(640px, calc(100% - 24px));
+        min-height: auto;
+        margin: 12px auto 32px;
+        padding: 16px 16px 32px;
+        border-radius: 24px;
+        background: #10281a;
+      }
+
+      html.preview main {
+        overflow: visible;
+      }
+
+      html.preview .screen {
+        max-height: none;
+        overflow: visible;
+      }
+
+      html.preview .sim-banner {
+        margin-bottom: 14px;
+      }
+
+      html.preview .sim-label {
+        color: #d7f5e2;
+        font-size: 15px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      html.preview .sim-note,
+      html.preview .sim-credit {
+        margin-top: 6px;
+        color: #e7f6ec;
+        font-size: 16px;
+        line-height: 1.4;
+      }
+
+      html.preview .said-words {
+        overflow-wrap: anywhere;
+      }
+
+      html.preview .actions {
+        margin-top: 16px;
+        padding-bottom: 8px;
+      }
+
+      .view-toggle {
+        min-height: 40px;
+        margin: 0 0 8px;
+        padding: 8px 14px;
+        font-size: 15px;
+      }
+
+      .glasses-scene,
+      .glasses-footer {
+        display: none;
+      }
+
+      html.preview.glasses {
+        background-color: #0b0d10;
+      }
+
+      html.preview.glasses body {
+        width: min(920px, calc(100% - 16px));
+        background: #141414;
+      }
+
+      html.glasses .kicker::after {
+        content: " · Glasses view";
+      }
+
+      html.glasses .glasses-scene {
+        display: block;
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        margin: 8px 0 12px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #06140e center / cover no-repeat;
+      }
+
+      html.glasses .glasses-hud {
+        position: absolute;
+        top: 10%;
+        right: 5%;
+        box-sizing: border-box;
+        width: min(240px, 46%);
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: rgba(18, 20, 22, 0.72);
+        color: #f4fff6;
+      }
+
+      html.glasses .glasses-step {
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #d7f5e2;
+      }
+
+      html.glasses .glasses-title {
+        margin-top: 6px;
+        font-size: 16px;
+        line-height: 1.2;
+        font-weight: 700;
+      }
+
+      html.glasses .glasses-hint {
+        margin-top: 4px;
+        font-size: 13px;
+        line-height: 1.3;
+        color: #e7f6ec;
+      }
+
+      html.glasses .glasses-footer {
+        display: block;
+        margin: 8px 0 0;
+        color: #b8c9be;
+        font-size: 13px;
+        line-height: 1.35;
+      }
+
+      html.glasses #observe-screen,
+      html.glasses #guide-screen,
+      html.glasses #explain-screen,
+      html.glasses #predict-screen,
+      html.glasses #experiment-screen,
+      html.glasses #learn-screen {
+        display: none !important;
+      }
+
+      html.glasses #compose-screen,
+      html.glasses #sketch-screen,
+      html.glasses #ready-screen {
+        background: #1a1f1c;
+      }
+
+      html.glasses #compose-screen h1,
+      html.glasses #sketch-screen h1,
+      html.glasses #ready-screen h1 {
+        font-size: 20px;
+      }
+
+      html.glasses .prompt,
+      html.glasses .clue {
+        margin-top: 10px;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body data-screen="observe">
+    <p class="kicker">GolfIQ</p>
+    <p class="card-version" id="card-version">2026-10-09.3</p>
+    <button type="button" id="view-toggle" class="view-toggle" hidden>Glasses view</button>
+    <div id="glasses-scene" class="glasses-scene" hidden>
+      <div class="glasses-hud">
+        <p id="glasses-step" class="glasses-step">1 Observe</p>
+        <h2 id="glasses-title" class="glasses-title">What do you notice?</h2>
+        <p id="glasses-hint" class="glasses-hint">Look between ball and hole.</p>
+      </div>
+    </div>
+    <main>
+      <section id="observe-screen" class="screen">
+        <p class="lesson">Illustrative lesson</p>
+        <h1>Observe</h1>
+        <p class="prompt">
+          Before I give you any clues, what do you notice between your ball and the hole?
+        </p>
+      </section>
+      <section id="compose-screen" class="screen" hidden>
+        <h1 id="compose-title">My notice</h1>
+        <p class="prompt" id="compose-prompt">Write what you notice, in your words.</p>
+        <textarea
+          id="my-notice"
+          class="focusable"
+          placeholder="In your words"
+          aria-label="My notice, in your words"
+        ></textarea>
+        <p id="notice-error" class="error" hidden>
+          Write what you notice, or go back and choose I don't know.
+        </p>
+      </section>
+      <section id="guide-screen" class="screen" hidden>
+        <p class="lesson">Illustrative lesson</p>
+        <h1>Guide</h1>
+        <p class="clue">Look at the overall shape of the green. Does either side appear higher?</p>
+      </section>
+      <section id="explain-screen" class="screen" hidden>
+        <p class="lesson">Illustrative lesson</p>
+        <h1>Explain</h1>
+        <p class="clue">
+          Gravity influences the ball toward lower ground. As the ball slows, the slope can have a
+          greater influence on its direction.
+        </p>
+        <p class="said-note">
+          Slope, grain, and speed can all shape how the ball behaves. This is not a measurement of
+          the green.
+        </p>
+      </section>
+      <section id="predict-screen" class="screen" hidden>
+        <p class="lesson">Illustrative lesson</p>
+        <h1>Predict</h1>
+        <p class="prompt">Based on what you see, how do you think the ball might behave?</p>
+      </section>
+      <section id="experiment-screen" class="screen" hidden>
+        <p class="lesson">Illustrative lesson</p>
+        <h1>Experiment</h1>
+        <p class="clue">
+          Pick your starting line and pace. Make the putt, then notice whether the ball behaved as
+          you expected.
+        </p>
+      </section>
+      <section id="learn-screen" class="screen" hidden>
+        <p class="lesson">Illustrative lesson</p>
+        <h1>Learn</h1>
+        <p class="prompt" id="learn-prompt">
+          What did the ball actually do? What would you look for next time?
+        </p>
+      </section>
+      <section id="sketch-screen" class="screen" hidden>
+        <p class="lesson">Prepared practice lesson</p>
+        <h1>Practice illustration</h1>
+        <figure>
+          <svg
+            viewBox="0 0 520 200"
+            role="img"
+            aria-label="Prepared practice illustration. Look between the labeled ball and hole. Not aligned with your green."
+          >
+            <rect width="520" height="200" rx="16" fill="#145c38" />
+            <rect x="108" y="48" width="304" height="72" rx="36" fill="#3d9a62" />
+            <text
+              x="260"
+              y="92"
+              text-anchor="middle"
+              fill="#f4fff6"
+              font-size="22"
+              font-family="Avenir Next, Segoe UI, sans-serif"
+            >
+              Look between ball and hole.
+            </text>
+            <circle cx="72" cy="84" r="18" fill="#f4fff6" />
+            <text
+              x="72"
+              y="148"
+              text-anchor="middle"
+              fill="#c9e7d4"
+              font-size="20"
+              font-family="Avenir Next, Segoe UI, sans-serif"
+            >
+              Ball
+            </text>
+            <circle cx="448" cy="84" r="20" fill="none" stroke="#f4fff6" stroke-width="3" />
+            <text
+              x="448"
+              y="148"
+              text-anchor="middle"
+              fill="#c9e7d4"
+              font-size="20"
+              font-family="Avenir Next, Segoe UI, sans-serif"
+            >
+              Hole
+            </text>
+          </svg>
+          <figcaption>Practice illustration—not aligned with your green.</figcaption>
+        </figure>
+      </section>
+      <section id="ready-screen" class="screen" hidden>
+        <p class="lesson">Illustrative lesson</p>
+        <h1>Before the next putt</h1>
+        <p id="ready-observe-label" class="said"></p>
+        <p id="ready-observe" class="said-words"></p>
+        <p id="ready-predict-label" class="said"></p>
+        <p id="ready-predict" class="said-words"></p>
+        <p id="ready-practice" class="said-note" hidden></p>
+        <p id="ready-next" class="clue">
+          Look again between the ball and the hole. Notice slope, grain, and pace, then pick your
+          own starting line.
+        </p>
+        <p id="ready-note" class="said-note">
+          Your words. Not a measurement of the green. This illustrative lesson does not claim a
+          measured read.
+        </p>
+      </section>
+    </main>
+    <div class="actions" id="actions"></div>
+    <p id="glasses-footer" class="glasses-footer" hidden>
+      Illustrative mockup · Display placement and size are not calibrated.
+    </p>
+    <script>
+      const body = document.body;
+      const actions = document.getElementById("actions");
+      const noticeField = document.getElementById("my-notice");
+      const noticeError = document.getElementById("notice-error");
+      const composeTitle = document.getElementById("compose-title");
+      const composePrompt = document.getElementById("compose-prompt");
+      const readyObserveLabel = document.getElementById("ready-observe-label");
+      const readyObserve = document.getElementById("ready-observe");
+      const readyPredictLabel = document.getElementById("ready-predict-label");
+      const readyPredict = document.getElementById("ready-predict");
+      const readyPractice = document.getElementById("ready-practice");
+      const learnPrompt = document.getElementById("learn-prompt");
+      const glassesScene = document.getElementById("glasses-scene");
+      const glassesStep = document.getElementById("glasses-step");
+      const glassesTitle = document.getElementById("glasses-title");
+      const glassesHint = document.getElementById("glasses-hint");
+      const glassesFooter = document.getElementById("glasses-footer");
+      const viewToggle = document.getElementById("view-toggle");
+      const STORAGE_KEY = "golfiq-lens-card-lesson";
+      const glassesCopy = {
+        observe: {
+          step: "1 Observe",
+          title: "What do you notice?",
+          hint: "Look between ball and hole.",
+        },
+        compose: { step: "1 Observe", title: "Your words", hint: "Write what you notice." },
+        guide: { step: "2 Guide", title: "See the shape", hint: "Does either side look higher?" },
+        explain: {
+          step: "3 Explain",
+          title: "Slope and pace",
+          hint: "The ball falls toward lower ground.",
+        },
+        predict: {
+          step: "4 Predict",
+          title: "How might it roll?",
+          hint: "Use what you see, not a measurement.",
+        },
+        experiment: {
+          step: "5 Ready to putt",
+          title: "Make the putt",
+          hint: "Pick a line and pace.",
+        },
+        learn: {
+          step: "6 Learn",
+          title: "What happened?",
+          hint: "What would you look for next time?",
+        },
+        sketch: {
+          step: "2 Guide",
+          title: "Illustration",
+          hint: "Not aligned with this green.",
+        },
+        ready: {
+          step: "7 Ready",
+          title: "Before the next putt",
+          hint: "Look again. Choose your own line.",
+        },
+      };
+      const screens = {
+        observe: document.getElementById("observe-screen"),
+        compose: document.getElementById("compose-screen"),
+        guide: document.getElementById("guide-screen"),
+        explain: document.getElementById("explain-screen"),
+        predict: document.getElementById("predict-screen"),
+        experiment: document.getElementById("experiment-screen"),
+        learn: document.getElementById("learn-screen"),
+        sketch: document.getElementById("sketch-screen"),
+        ready: document.getElementById("ready-screen"),
+      };
+      const composeCopy = {
+        observe: {
+          title: "My notice",
+          prompt: "Write what you notice, in your words.",
+          submit: "That's my notice",
+          blank: "Write what you notice, or go back and choose I don't know.",
+          redirect:
+            "Keep looking at the green — slope, grain, speed, or how the ball might move. You can try other words, or go back and choose I don't know.",
+        },
+        predict: {
+          title: "My prediction",
+          prompt: "Write how you think the ball might behave.",
+          submit: "That's my prediction",
+          blank: "Write a prediction, or go back and choose I don't know.",
+          redirect:
+            "Think about slope, grain, speed, and how the ball might roll. You can try other words, or go back and choose I don't know.",
+        },
+        learn: {
+          title: "What I saw",
+          prompt: "Write what the ball did, and what you would look for next time.",
+          submit: "That's what I saw",
+          blank: "Write what you saw, or go back and choose I don't know.",
+          redirect:
+            "Stay with what the ball did — slope, grain, speed, or the roll. You can try other words, or go back and choose I don't know.",
+        },
+      };
+      const topicWords =
+        /\b(ball|hole|cup|green|slope|grain|break|pace|speed|roll|putt|grass|high|higher|low|lower|left|right|tilt|hill|side|fall|line|slow|slows|fast|aim|die|lag|firm|borrow|true|flat|uphill|downhill|crown|ridge|contour|lean|drop|curve|turn|move|behave|behavior|notice|see|saw|miss|missed|lip|hold|stop|wiggle|borrowed|break(?:s|ing)?)\b/i;
+      const drafts = { observe: "", predict: "", learn: "" };
+      const answers = { observe: null, predict: null, learn: null };
+      let composeKind = "observe";
+      let sketchFrom = "guide";
+      let practiceSkipped = false;
+      let transitionTimer;
+      let firstScreen = true;
+
+      if (document.documentElement.classList.contains("preview")) {
+        document.documentElement.style.backgroundImage = 'url("/lens-card-preview/green.jpg")';
+        glassesScene.style.backgroundImage = 'url("/lens-card-preview/green.jpg")';
+        const banner = document.createElement("div");
+        banner.className = "sim-banner";
+        const label = document.createElement("p");
+        label.className = "sim-label";
+        label.textContent = "Simulated background";
+        const note = document.createElement("p");
+        note.className = "sim-note";
+        note.textContent = "The practice illustration is not aligned with this photograph.";
+        const credit = document.createElement("p");
+        credit.className = "sim-credit";
+        credit.textContent = "Photograph by Rushay Booysen. Pexels photo 4398355.";
+        banner.append(label, note, credit);
+        body.insertBefore(banner, body.firstChild);
+        viewToggle.hidden = false;
+        viewToggle.addEventListener("click", (event) => {
+          if (event.detail > 1) return;
+          applyGlassesMode(!document.documentElement.classList.contains("glasses"));
+        });
+        applyGlassesMode(wantsGlassesView());
+      }
+
+      function wantsGlassesView() {
+        try {
+          return new URLSearchParams(location.search).get("view") === "glasses";
+        } catch {
+          return false;
+        }
+      }
+
+      function applyGlassesMode(on) {
+        document.documentElement.classList.toggle("glasses", on);
+        glassesScene.hidden = !on;
+        glassesFooter.hidden = !on;
+        glassesFooter.textContent =
+          "Illustrative mockup · Display placement and size are not calibrated.";
+        viewToggle.textContent = on ? "Card view" : "Glasses view";
+        try {
+          const url = new URL(location.href);
+          if (on) url.searchParams.set("view", "glasses");
+          else url.searchParams.delete("view");
+          history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+        } catch {
+          /* preview-only URL update */
+        }
+      }
+
+      function updateGlassesHud(name) {
+        const phase = name === "compose" ? composeKind : name;
+        const copy = glassesCopy[phase] || glassesCopy.observe;
+        let title = copy.title;
+        let hint = copy.hint;
+        if (name === "compose") {
+          const compose = currentComposeCopy();
+          title = composeKind === "observe" ? glassesCopy.compose.title : compose.title;
+          hint = composeKind === "observe" ? glassesCopy.compose.hint : compose.prompt;
+        } else if (name === "learn" && practiceSkipped) {
+          title = "Look next time";
+          hint = "Practice was skipped.";
+        } else if (name === "ready" && practiceSkipped) {
+          hint = "Practice was skipped. Choose your own line.";
+        }
+        glassesStep.textContent = copy.step;
+        glassesTitle.textContent = title;
+        glassesHint.textContent = hint;
+      }
+
+      function isDontKnow(text) {
+        const t = text.trim().toLowerCase().replace(/[’]/g, "'");
+        return (
+          /^(i\s+)?(do\s*not|don't|dont)\s+know\b/.test(t) ||
+          /^(not sure|no idea|unsure|idk)\.?$/.test(t)
+        );
+      }
+
+      function answerKind(text) {
+        if (topicWords.test(text)) return "words";
+        if (isDontKnow(text)) return "unknown";
+        return "unrelated";
+      }
+
+      function rememberDraft() {
+        drafts[composeKind] = noticeField.value;
+      }
+
+      function currentComposeCopy(kind = composeKind) {
+        const copy = composeCopy[kind];
+        if (kind === "learn" && practiceSkipped) {
+          return {
+            ...copy,
+            title: "Look next time",
+            submit: "That's my reflection",
+            redirect:
+              "Think about what you would look for next time — slope, grain, speed, or the roll. You can try other words, or go back and choose I don't know.",
+            prompt: "Write what you would look for next time.",
+            blank: "Write what you would look for next time, or go back and choose I don't know.",
+          };
+        }
+        return copy;
+      }
+
+      function applyComposeChrome() {
+        const copy = currentComposeCopy();
+        composeTitle.textContent = copy.title;
+        composePrompt.textContent = copy.prompt;
+        noticeField.value = drafts[composeKind];
+        noticeField.setAttribute("aria-label", copy.title + ", in your words");
+      }
+
+      function persist() {
+        try {
+          sessionStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+              screen: body.dataset.screen,
+              composeKind,
+              sketchFrom,
+              drafts,
+              answers,
+              field: noticeField.value,
+              practiceSkipped,
+            }),
+          );
+        } catch {
+          /* sessionStorage may be unavailable; keep the in-memory lesson */
+        }
+      }
+
+      function readAnswer(value) {
+        if (!value || (value.kind !== "words" && value.kind !== "unknown")) return null;
+        return { kind: value.kind, text: value.kind === "words" ? String(value.text ?? "") : "" };
+      }
+
+      function loadSaved() {
+        try {
+          const raw = sessionStorage.getItem(STORAGE_KEY);
+          if (!raw) return null;
+          const data = JSON.parse(raw);
+          if (!data || !screens[data.screen]) return null;
+          composeKind = composeCopy[data.composeKind] ? data.composeKind : "observe";
+          sketchFrom = data.sketchFrom === "explain" ? "explain" : "guide";
+          drafts.observe = String(data.drafts?.observe ?? "");
+          drafts.predict = String(data.drafts?.predict ?? "");
+          drafts.learn = String(data.drafts?.learn ?? "");
+          answers.observe = readAnswer(data.answers?.observe);
+          answers.predict = readAnswer(data.answers?.predict);
+          answers.learn = readAnswer(data.answers?.learn);
+          practiceSkipped = data.practiceSkipped === true;
+          noticeField.value =
+            data.screen === "compose" ? drafts[composeKind] : String(data.field ?? "");
+          return data.screen;
+        } catch {
+          return null;
+        }
+      }
+
+      function openCompose(kind) {
+        rememberDraft();
+        composeKind = kind;
+        applyComposeChrome();
+        show("compose");
+      }
+
+      function markUnknown(kind) {
+        answers[kind] = { kind: "unknown", text: "" };
+        drafts[kind] = noticeField.value;
+      }
+
+      function setScrollable(label, words, base) {
+        const moreWords = Boolean(words && words.scrollHeight > words.clientHeight);
+        if (label) label.textContent = moreWords ? `${base} · scroll for more` : base;
+        if (words) words.tabIndex = moreWords ? 0 : -1;
+      }
+
+      function renderReady() {
+        const observe = answers.observe;
+        const predict = answers.predict;
+        if (!observe || observe.kind === "unknown") {
+          readyObserve.textContent =
+            "That is a fair starting point. This lesson still asks you to look between the ball and the hole.";
+          setScrollable(readyObserveLabel, readyObserve, "You chose I don't know");
+        } else {
+          readyObserve.textContent = observe.text;
+          setScrollable(readyObserveLabel, readyObserve, "You noticed");
+        }
+        if (!predict || predict.kind === "unknown") {
+          readyPredict.textContent =
+            "You can still watch slope, grain, and speed on the next roll.";
+          setScrollable(readyPredictLabel, readyPredict, "You chose I don't know for a prediction");
+        } else {
+          readyPredict.textContent = predict.text;
+          setScrollable(readyPredictLabel, readyPredict, "You predicted");
+        }
+        readyPractice.hidden = false;
+        readyPractice.textContent = practiceSkipped
+          ? "Practice was skipped. This finish does not claim a putt was made."
+          : "You marked that you made the putt. GolfIQ did not verify the stroke.";
+      }
+
+      function button(label, className, onClick) {
+        const node = document.createElement("button");
+        node.type = "button";
+        node.className = className ? `focusable ${className}` : "focusable";
+        node.textContent = label;
+        node.addEventListener("click", (event) => {
+          if (node.disabled || event.detail > 1) return;
+          onClick();
+        });
+        return node;
+      }
+
+      function show(name) {
+        clearTimeout(transitionTimer);
+        if (body.dataset.screen === "compose" && name !== "compose") rememberDraft();
+        for (const [id, screen] of Object.entries(screens)) screen.hidden = id !== name;
+        body.dataset.screen = name;
+        updateGlassesHud(name);
+        actions.replaceChildren();
+        if (name === "observe") {
+          actions.append(
+            button("My notice", "secondary", () => openCompose("observe")),
+            button("I don't know", "", () => {
+              markUnknown("observe");
+              show("guide");
+            }),
+          );
+        } else if (name === "compose") {
+          noticeError.hidden = true;
+          const copy = currentComposeCopy();
+          actions.append(
+            button(copy.submit, "", submitCompose),
+            button("Cancel", "secondary", () => show(composeKind)),
+          );
+        } else if (name === "guide") {
+          actions.append(
+            button("Continue", "", () => show("explain")),
+            button("Practice illustration", "secondary", () => {
+              sketchFrom = "guide";
+              show("sketch");
+            }),
+          );
+        } else if (name === "explain") {
+          actions.append(button("Continue", "", () => show("predict")));
+        } else if (name === "predict") {
+          actions.append(
+            button("My prediction", "secondary", () => openCompose("predict")),
+            button("I don't know", "", () => {
+              markUnknown("predict");
+              show("experiment");
+            }),
+          );
+        } else if (name === "experiment") {
+          actions.append(
+            button("I've made my putt", "", () => {
+              practiceSkipped = false;
+              show("learn");
+            }),
+            button("Skip practice", "secondary", () => {
+              practiceSkipped = true;
+              show("learn");
+            }),
+          );
+        } else if (name === "learn") {
+          learnPrompt.textContent = practiceSkipped
+            ? "You skipped the practice putt. What would you look for next time?"
+            : "What did the ball actually do? What would you look for next time?";
+          actions.append(
+            button(currentComposeCopy("learn").title, "secondary", () => openCompose("learn")),
+            button("I don't know", "", () => {
+              markUnknown("learn");
+              renderReady();
+              show("ready");
+            }),
+          );
+        } else if (name === "sketch") {
+          actions.append(button("Back to the clue", "secondary", () => show(sketchFrom)));
+        } else {
+          renderReady();
+          actions.append(button("Review", "secondary", () => show("guide")));
+        }
+        // Newly placed buttons must not consume the same double-click or rapid tap.
+        const buttons = [...actions.querySelectorAll("button")];
+        if (!firstScreen) {
+          for (const node of buttons) node.disabled = true;
+          transitionTimer = setTimeout(() => {
+            for (const node of buttons) node.disabled = false;
+            if (
+              name !== "compose" &&
+              document.activeElement !== readyObserve &&
+              document.activeElement !== readyPredict
+            )
+              actions.querySelector(".focusable")?.focus();
+          }, 350);
+        }
+        firstScreen = false;
+        if (name === "compose") noticeField.focus();
+        else actions.querySelector(".focusable")?.focus();
+        persist();
+      }
+
+      function submitCompose() {
+        const text = noticeField.value.trim();
+        const copy = currentComposeCopy();
+        if (!text) {
+          noticeError.textContent = copy.blank;
+          noticeError.hidden = false;
+          return;
+        }
+        const kind = answerKind(text);
+        if (kind === "unrelated") {
+          noticeError.textContent = copy.redirect;
+          noticeError.hidden = false;
+          return;
+        }
+        drafts[composeKind] = noticeField.value;
+        answers[composeKind] = { kind, text: kind === "unknown" ? "" : text };
+        if (composeKind === "observe") show("guide");
+        else if (composeKind === "predict") show("experiment");
+        else {
+          renderReady();
+          show("ready");
+        }
+      }
+
+      function isTextField(node) {
+        return node instanceof HTMLTextAreaElement;
+      }
+
+      function focusables() {
+        const fields = [
+          ...document.querySelectorAll(
+            'textarea.focusable, #ready-observe[tabindex="0"], #ready-predict[tabindex="0"]',
+          ),
+        ].filter((node) => !node.closest("[hidden]"));
+        return [...fields, ...actions.querySelectorAll(".focusable:not([disabled])")];
+      }
+
+      function escapeTarget() {
+        const screen = body.dataset.screen;
+        if (screen === "compose") return composeKind;
+        if (screen === "guide" || screen === "explain") return "observe";
+        if (screen === "sketch") return sketchFrom;
+        if (screen === "predict") return "explain";
+        if (screen === "experiment") return "predict";
+        if (screen === "learn") return "experiment";
+        if (screen === "ready") return "learn";
+        return "observe";
+      }
+
+      noticeField.addEventListener("input", () => {
+        noticeError.hidden = true;
+        rememberDraft();
+        persist();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        // Preserve native caret, selection and multiline editing inside the answer.
+        if (
+          (isTextField(document.activeElement) ||
+            document.activeElement === readyObserve ||
+            document.activeElement === readyPredict) &&
+          event.key !== "Escape"
+        )
+          return;
+        if (event.repeat) {
+          event.preventDefault();
+          return;
+        }
+        const items = focusables();
+        if (!items.length) return;
+        const index = items.indexOf(document.activeElement);
+        if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+          event.preventDefault();
+          items[(index + 1 + items.length) % items.length].focus();
+        } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+          event.preventDefault();
+          items[(index - 1 + items.length) % items.length].focus();
+        } else if (event.key === "Enter" && isTextField(document.activeElement)) {
+          return;
+        } else if (
+          event.key === "Enter" &&
+          !document.activeElement?.disabled &&
+          document.activeElement?.classList.contains("focusable")
+        ) {
+          event.preventDefault();
+          document.activeElement.click();
+        } else if (event.key === "Escape" && body.dataset.screen !== "observe") {
+          event.preventDefault();
+          show(escapeTarget());
+        }
+      });
+
+      const restored = loadSaved();
+      if (restored === "compose") applyComposeChrome();
+      show(restored || "observe");
+    </script>
+  </body>
+</html>
