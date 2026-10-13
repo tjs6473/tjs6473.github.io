@@ -1,0 +1,15 @@
+{
+  "appCommit": "3d38be6e620b5d6d95b0c22ac2f16b967f70d840",
+  "hostingCommit": "ae720dde6e46a1b21effd5c1472a676698c98a49",
+  "hostingCommitKind": "hosting-source",
+  "scenarioId": "right-high-example-v1",
+  "buildTime": "2026-10-13T18:41:59Z",
+  "files": {
+    "app.js": "2eaeb5274db188d27a21d77b9a6313f85ecdcd4047c79a8b89e5442ce41a793a",
+    "load-guard.js": "03de998118e96fae2732b4c80780182af87c09077443a2e6d6c5b6927b54282c",
+    "render.js": "ad6613c26320eff306f5e8346d738902d16c05d0a36d6399594c0a16941a625b",
+    "scenario.js": "53ac8732b122b5739e422ef5b78c72a7c4ec38352513dfada824a0872c5ae1da",
+    "index.html": "4814ae401a87bba900cf05d1db2a121db962c0ab35b33bbddbafb05d6ce30e71",
+    "../green-preview.js": "9a59797153b0a15383a01418ca28f9d0cf486b332eea7d44a52feff3f161526f"
+  }
+}
