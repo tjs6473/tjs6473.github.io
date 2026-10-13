@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Deployment packaging replaces these sentinels; never hand-edit SHAs. -->
+    <meta name="golfiq-app-commit" content="2680baf1b1c68798e3630164ca46e4aaef788101" />
+    <meta name="golfiq-hosting-commit" content="2a8612c57296fc94afde3e18d4af959090177f38" />
+    <meta name="golfiq-scenario-id" content="right-high-example-v1" />
+    <meta name="golfiq-build-time" content="2026-10-13T16:37:33Z" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GolfIQ · Beginner simulator</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #091e17;
+        color: #f3f5ec;
+        font: 17px/1.5 system-ui;
+      }
+      main {
+        max-width: 1120px;
+        margin: auto;
+        padding: 28px 20px 48px;
+      }
+      header {
+        max-width: 800px;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 44px);
+        line-height: 1.1;
+        margin: 8px 0 14px;
+      }
+      h2 {
+        font-size: 24px;
+        margin: 0 0 12px;
+      }
+      .eyebrow {
+        color: #b5d8bd;
+        letter-spacing: 0.12em;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .disclosure {
+        color: #e7d7a5;
+        font-size: 14px;
+      }
+      canvas {
+        width: 100%;
+        display: block;
+        border-radius: 16px;
+        margin: 22px 0 8px;
+      }
+      .panel {
+        background: #16392b;
+        border: 1px solid #41664d;
+        border-radius: 16px;
+        padding: 22px;
+        margin-top: 16px;
+      }
+      p {
+        margin: 10px 0;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 18px 0;
+      }
+      button {
+        background: #dff6b2;
+        color: #142718;
+        border: 1px solid #dff6b2;
+        border-radius: 9px;
+        padding: 12px 18px;
+        font: 600 16px system-ui;
+        min-height: 48px;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: transparent;
+        color: #e9f6df;
+      }
+      button[aria-pressed="true"] {
+        background: #f7d879;
+        color: #15251b;
+      }
+      button:focus-visible,
+      textarea:focus-visible {
+        outline: 3px solid #f7d879;
+        outline-offset: 4px;
+      }
+      textarea {
+        display: block;
+        width: 100%;
+        min-height: 96px;
+        background: #0d271c;
+        color: #fff;
+        border: 1px solid #9cbc9a;
+        border-radius: 8px;
+        padding: 12px;
+        font: inherit;
+        margin-top: 10px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      .scene-disclaimer {
+        color: #f5e9bf;
+        font-size: 13px;
+        font-weight: 650;
+        letter-spacing: 0.025em;
+        line-height: 1.4;
+        margin: 4px 0 8px;
+      }
+      .build-provenance {
+        font: 12px/1.4 system-ui;
+        color: #b5d8bd;
+        overflow-wrap: anywhere;
+      }
+      .legend {
+        color: #d7e8db;
+        font-size: 15px;
+      }
+      .note {
+        font-size: 14px;
+        color: #c0d3c5;
+      }
+      #your-words {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      #error,
+      #load-error {
+        color: #ffe39b;
+      }
+      #load-error,
+      #load-wait {
+        font-weight: 650;
+        margin: 12px 0 0;
+      }
+      #load-wait {
+        color: #b5d8bd;
+      }
+      @media (max-width: 520px) {
+        main {
+          padding: 20px 14px;
+        }
+        .panel {
+          padding: 16px;
+        }
+        .controls button {
+          width: 100%;
+        }
+        canvas {
+          margin-top: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="eyebrow">GOLFIQ / BEGINNER SIMULATOR / DRAFT</div>
+        <h1>See the slope. Understand the choice.</h1>
+        <p>One authored example. Take a look before revealing the lesson.</p>
+        <p class="disclosure">
+          Authored simulation · not a measured green or calculated recommendation
+        </p>
+      </header>
+      <p id="load-wait" hidden>Still loading…</p>
+      <p id="load-error" role="alert" hidden>
+        The simulator could not load. Refresh the page and try again.
+      </p>
+      <canvas
+        id="scene"
+        width="1800"
+        height="1120"
+        role="img"
+        aria-label="Authored putting scene with a ball and a hole. No teaching cues revealed yet."
+      ></canvas>
+      <p id="scene-disclaimer" class="scene-disclaimer">
+        AUTHORED SCENE · DRAWING UNITS, NOT MEASUREMENTS
+      </p>
+      <p id="legend" class="legend">Look at the ground between the ball and the hole.</p>
+      <section id="observe" class="panel">
+        <h2>First, what do you notice?</h2>
+        <label for="notice"
+          >Which side looks higher? Which way might the ball bend?<textarea
+            id="notice"
+            placeholder="Your first impression…"
+          ></textarea>
+        </label>
+        <p id="error" role="alert" hidden>
+          Write your first impression, or choose “I'm not sure yet.”
+        </p>
+        <div class="controls">
+          <button id="save" disabled>Keep my observation</button
+          ><button class="secondary" id="unknown" disabled>I'm not sure yet</button>
+        </div>
+      </section>
+      <section id="explore" class="panel" hidden>
+        <h2>Explore this example</h2>
+        <p>Your first impression: <span id="your-words"></span></p>
+        <div class="controls">
+          <button id="grid" disabled aria-pressed="false">Show slope</button
+          ><button id="path" disabled aria-pressed="false">Show example aim &amp; path</button
+          ><button id="ready" class="secondary" disabled>Ready — clear cues</button>
+        </div>
+        <div id="slope-note" hidden>
+          <p>
+            <strong>Right is higher; left is lower.</strong> The white grid follows this authored
+            tilted surface. Blue arrows point downhill. Neither is a survey of a real green.
+          </p>
+        </div>
+        <div id="rationale" hidden>
+          <h2>Why start right?</h2>
+          <p id="why"></p>
+          <p id="pace"></p>
+          <p id="limit" class="note"></p>
+        </div>
+      </section>
+      <section id="finish" class="panel" hidden>
+        <h2>Cues cleared</h2>
+        <p>
+          Before another example, name the high side and describe why a starting direction could
+          differ from the hole. This does not verify a stroke or prove learning.
+        </p>
+        <button id="review" disabled>Review this example</button>
+      </section>
+      <div class="controls">
+        <button id="reset" class="secondary" disabled>Start over</button>
+      </div>
+      <p class="build-provenance" id="build-provenance" aria-label="Build provenance">
+        App 2680baf · Host source 2a8612c · right-high-example-v1
+      </p>
+      <p class="note">
+        Separate simulator lesson, not a replacement for Lesson 001. Your words stay in this page's
+        memory; reload starts fresh. No sensors, saved answers or putt calculations.
+      </p>
+    </main>
+    <script>
+      (function () {
+        var shown = false;
+        function hideNode(id) {
+          var node = document.getElementById(id);
+          if (node) node.hidden = true;
+        }
+        function golfiqBeginnerLoadError() {
+          if (shown) return;
+          shown = true;
+          hideNode("load-wait");
+          var node = document.getElementById("load-error");
+          if (node) node.hidden = false;
+        }
+        window.golfiqBeginnerLoadError = golfiqBeginnerLoadError;
+        window.golfiqBeginnerReady = function () {
+          window.golfiqBeginnerIsReady = true;
+          if (window.golfiqBeginnerWaitTimer) {
+            clearTimeout(window.golfiqBeginnerWaitTimer);
+            window.golfiqBeginnerWaitTimer = null;
+          }
+          if (window.golfiqBeginnerReadyTimer) {
+            clearTimeout(window.golfiqBeginnerReadyTimer);
+            window.golfiqBeginnerReadyTimer = null;
+          }
+          hideNode("load-wait");
+          hideNode("load-error");
+        };
+        window.addEventListener("error", function () {
+          if (!window.golfiqBeginnerIsReady) golfiqBeginnerLoadError();
+        });
+        window.addEventListener("unhandledrejection", function () {
+          if (!window.golfiqBeginnerIsReady) golfiqBeginnerLoadError();
+        });
+        var waitMs = Number(window.GOLFIQ_BEGINNER_WAIT_MS);
+        if (!(waitMs > 0)) waitMs = 4000;
+        var readyMs = Number(window.GOLFIQ_BEGINNER_READY_MS);
+        if (!(readyMs > 0)) readyMs = 10000;
+        window.golfiqBeginnerWaitTimer = setTimeout(function () {
+          if (!window.golfiqBeginnerIsReady && !shown) {
+            var wait = document.getElementById("load-wait");
+            if (wait) wait.hidden = false;
+          }
+        }, waitMs);
+        window.golfiqBeginnerReadyTimer = setTimeout(function () {
+          if (!window.golfiqBeginnerIsReady) golfiqBeginnerLoadError();
+        }, readyMs);
+      })();
+    </script>
+    <script type="module" src="./app.js" onerror="golfiqBeginnerLoadError()"></script>
+  </body>
+</html>
